@@ -7,6 +7,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.pattern.ask
 import akka.stream.ActorMaterializer
+import org.slf4j.LoggerFactory
 import ru.tochkak.print_service.actors.PrintActor
 import ru.tochkak.print_service.actors.PrintActor.Print
 import ru.tochkak.print_service.models.{Error, PrintData}
@@ -16,6 +17,8 @@ import scala.concurrent.duration._
 import scala.io.StdIn
 
 object WebServer {
+
+  val logger = LoggerFactory.getLogger(this.getClass)
 
   def main(args: Array[String]) = {
     implicit val system = ActorSystem()
@@ -37,7 +40,7 @@ object WebServer {
     }
 
     val bindingFuture = Http().bindAndHandle(route, domain, port)
-    println(s"Server online at http://$domain:$port/\n")
+    logger.info(s"The server is running on http://$domain:$port")
     StdIn.readLine()
     bindingFuture
       .flatMap(_.unbind())

@@ -6,6 +6,7 @@ import javax.swing.text.html.{HTMLEditorKit, ImageView}
 import javax.swing.text.{Element, View, ViewFactory}
 
 import cats.implicits._
+import org.slf4j.LoggerFactory
 import ru.tochkak.print_service.models.{Error, PrintData}
 
 import scala.util.Try
@@ -20,6 +21,7 @@ class PrintService {
     val jEditorPane = render(printData)
 
     attributes.add(ConfigService.orientation.value)
+    logger.debug(s"Printer name: ${printService.getName}")
 
     Try(jEditorPane.print(null, null, false, printService, attributes, false)).toEither.bimap(
       _ => Error.PrintError,
@@ -32,6 +34,7 @@ class PrintService {
       .replaceAll(FIRST_NAME_PLACE, printData.firstName)
       .replaceAll(LAST_NAME_PLACE, printData.lastName)
       .replaceAll(DATE_PLACE, printData.date)
+    logger.trace(s"Template for print: \n$template")
 
     val jep = new JEditorPane
     jep.setEditorKit(new CustomHTMLEditor)
@@ -42,6 +45,8 @@ class PrintService {
 }
 
 object PrintService {
+  private final val logger = LoggerFactory.getLogger(this.getClass)
+
   private final val FIRST_NAME_PLACE = "%FIRST_NAME%"
   private final val LAST_NAME_PLACE = "%LAST_NAME%"
   private final val DATE_PLACE = "%DATE%"
@@ -62,5 +67,4 @@ object PrintService {
   class CustomHTMLEditor extends HTMLEditorKit {
     override def getViewFactory: ViewFactory = new SyncViewFactor
   }
-
 }
