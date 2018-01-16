@@ -1,13 +1,16 @@
 package ru.tochkak.print_service.actors
 
 import akka.actor.Actor
-import cats.implicits._
 import ru.tochkak.print_service.actors.PrintActor.Print
-import ru.tochkak.print_service.models.{PrintData, Error}
+import ru.tochkak.print_service.models.PrintData
+import ru.tochkak.print_service.services.PrintService
 
 class PrintActor extends Actor {
+  private final val printService = new PrintService
+
   override def receive: Receive = {
-    case Print(printData) => ().asRight[Error]
+    case Print(printData) =>
+      printService.print(printData)
   }
 }
 
