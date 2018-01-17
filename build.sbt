@@ -14,7 +14,8 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % logbackVersion,
 )
 
+mainClass in (Compile, run) := Some("ru.tochkak.print_service.WebServer")
 scalacOptions ++= Seq("-deprecation", "-feature")
 
-mainClass in (Compile, run) := Some("ru.tochkak.print_service.WebServer")
+mappings in Universal += ((resourceDirectory in Compile).value / "application.conf") -> "conf/application.conf"
 enablePlugins(JavaServerAppPackaging)

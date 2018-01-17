@@ -4,7 +4,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import ru.tochkak.print_service.models.Orientation
 
 object ConfigService {
-  val config: Config = ConfigFactory.load("application.conf")
+  val config: Config = ConfigFactory.load()
 
   val interface: String = config.getString("http.interface")
   val port: Int = config.getInt("http.port")
