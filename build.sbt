@@ -1,6 +1,6 @@
 name := "print_service"
 organization := "ru.tochkak"
-version := "0.0.1_dev"
+version := "0.0.1"
 scalaVersion := "2.12.4"
 
 val akkaHttpVersion = "10.0.11"
@@ -13,6 +13,8 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
   "ch.qos.logback" % "logback-classic" % logbackVersion,
 )
+
+scalacOptions ++= Seq("-deprecation", "-feature")
 
 mainClass in (Compile, run) := Some("ru.tochkak.print_service.WebServer")
 enablePlugins(JavaServerAppPackaging)

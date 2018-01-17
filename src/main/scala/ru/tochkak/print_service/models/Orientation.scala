@@ -1,6 +1,7 @@
 package ru.tochkak.print_service.models
 
 import javax.print.attribute.standard.OrientationRequested
+import scala.language.implicitConversions
 
 abstract class Orientation(
   val name: String,

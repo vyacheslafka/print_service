@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>application.log</file>
+        <encoder>
+            <pattern>%date{ISO8601} [%-5level] %logger{20} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE" />
+    </appender>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%date{ISO8601} [%-5level] %logger{20} - %msg%n</pattern>
@@ -15,6 +26,7 @@
 
     <root level="TRACE">
         <appender-ref ref="ASYNC_STDOUT" />
+        <appender-ref ref="ASYNC_FILE" />
     </root>
 
 </configuration>
