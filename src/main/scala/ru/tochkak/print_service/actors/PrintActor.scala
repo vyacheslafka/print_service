@@ -10,7 +10,7 @@ class PrintActor extends Actor {
 
   override def receive: Receive = {
     case Print(printData) =>
-      printService.print(printData)
+      sender ! printService.print(printData)
   }
 }
 

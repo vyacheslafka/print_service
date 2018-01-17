@@ -14,4 +14,5 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % logbackVersion,
 )
 
+mainClass in (Compile, run) := Some("ru.tochkak.print_service.WebServer")
 enablePlugins(JavaServerAppPackaging)

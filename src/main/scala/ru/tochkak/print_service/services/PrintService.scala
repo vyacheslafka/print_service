@@ -1,5 +1,6 @@
 package ru.tochkak.print_service.services
 
+import javax.print.PrintServiceLookup
 import javax.print.attribute.HashPrintRequestAttributeSet
 import javax.swing.JEditorPane
 import javax.swing.text.html.{HTMLEditorKit, ImageView}
@@ -16,17 +17,24 @@ class PrintService {
   import PrintService._
 
   def print(printData: PrintData) = {
-    val printService = javax.print.PrintServiceLookup.lookupDefaultPrintService
-    val attributes = new HashPrintRequestAttributeSet
-    val jEditorPane = render(printData)
+    val printServices = PrintServiceLookup.lookupPrintServices(null, null)
+    logger.trace(s"Found ${printServices.length} printers")
 
-    attributes.add(ConfigService.orientation.value)
-    logger.debug(s"Printer name: ${printService.getName}")
+    printServices.find(_.getName.contains(ConfigService.printerName)).map { printer =>
+      val attributes = new HashPrintRequestAttributeSet
+      val jEditorPane = render(printData)
 
-    Try(jEditorPane.print(null, null, false, printService, attributes, false)).toEither.bimap(
-      _ => Error.PrintError,
-      _ => ()
-    )
+      attributes.add(ConfigService.orientation.value)
+      logger.debug(s"Printer name: ${printer.getName}")
+
+      Try(jEditorPane.print(null, null, false, printer, attributes, false)).toEither.bimap[Error, Unit](
+        _ => Error.PrintError,
+        _ => ()
+      )
+    } getOrElse {
+      logger.debug("Printer not found")
+      Error.PrintFindError.asLeft[Unit]
+    }
   }
 
   private def render(printData: PrintData) = {

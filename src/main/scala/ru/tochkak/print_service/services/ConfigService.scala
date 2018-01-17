@@ -9,6 +9,7 @@ object ConfigService {
   val interface: String = config.getString("http.interface")
   val port: Int = config.getInt("http.port")
 
-  val template: String = config.getString("template.pattern")
-  val orientation: Orientation = config.getString("template.orientation")
+  val printerName: String = config.getString("printer.name")
+  val orientation: Orientation = config.getString("printer.orientation")
+  val template: String = config.getString("printer.template")
 }

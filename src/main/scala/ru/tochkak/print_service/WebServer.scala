@@ -3,14 +3,13 @@ package ru.tochkak.print_service
 import akka.actor.{ActorSystem, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
-import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.pattern.ask
 import akka.stream.ActorMaterializer
 import org.slf4j.LoggerFactory
 import ru.tochkak.print_service.actors.PrintActor
 import ru.tochkak.print_service.actors.PrintActor.Print
-import ru.tochkak.print_service.models.{Error, PrintData}
+import ru.tochkak.print_service.models.{Error, PrintData, Success}
 import ru.tochkak.print_service.services.ConfigService
 
 import scala.concurrent.ExecutionContextExecutor
@@ -37,7 +36,7 @@ object WebServer {
           onSuccess(printActor.ask(Print(printData))(30.seconds).mapTo[Either[Error, Unit]]) { res =>
             res.fold(
               error => complete(error.toJson),
-              _ => complete(StatusCodes.NoContent)
+              _ => complete(Success.toJson)
             )
           }
         }
