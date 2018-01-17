@@ -6,7 +6,7 @@ import ru.tochkak.print_service.models.Orientation
 object ConfigService {
   val config: Config = ConfigFactory.load("application.conf")
 
-  val domain: String = config.getString("http.domain")
+  val interface: String = config.getString("http.interface")
   val port: Int = config.getInt("http.port")
 
   val template: String = config.getString("template.pattern")

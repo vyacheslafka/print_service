@@ -18,12 +18,14 @@ object PrintData extends DefaultJsonProtocol {
       "date" -> JsString(obj.date)
     )
 
-    override def read(json: JsValue): PrintData = {
-      json.asJsObject.getFields("id", "first_name", "last_name", "date") match {
-        case Seq(JsNumber(id), JsString(firstName), JsString(lastName), JsString(date)) =>
-          PrintData(Some(id.toLong), firstName, lastName, date)
-        case _ => throw DeserializationException("PrintData expected")
-      }
+    override def read(json: JsValue): PrintData = json match {
+      case JsObject(fields) => PrintData(
+        fields.get("id").map(_.toString.toLong),
+        fields("first_name").toString,
+        fields("last_name").toString,
+        fields("date").toString
+      )
+      case _ => throw DeserializationException("PrintData expected")
     }
   }
 }

@@ -26,12 +26,12 @@ object WebServer {
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
-    val domain = ConfigService.domain
+    val domain = ConfigService.interface
     val port = ConfigService.port
 
     val printActor = system.actorOf(Props[PrintActor], "print-actor")
 
-    val route = path("print") {
+    val route = path("api" / "print") {
       post {
         entity(as[PrintData]) { printData =>
           onSuccess(printActor.ask(Print(printData))(30.seconds).mapTo[Either[Error, Unit]]) { res =>
