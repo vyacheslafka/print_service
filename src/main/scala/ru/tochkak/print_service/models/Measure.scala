@@ -3,9 +3,9 @@ package ru.tochkak.print_service.models
 import javax.print.attribute.standard.MediaPrintableArea
 import scala.language.implicitConversions
 
-case class Measure(
-  name: String,
-  value: Int
+abstract class Measure(
+  val name: String,
+  val value: Int
 )
 
 object Measure {

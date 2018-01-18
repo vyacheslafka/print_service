@@ -9,12 +9,13 @@ import akka.stream.ActorMaterializer
 import org.slf4j.LoggerFactory
 import ru.tochkak.print_service.actors.PrintActor
 import ru.tochkak.print_service.actors.PrintActor.Print
-import ru.tochkak.print_service.models.{Error, PrintData, Success}
+import ru.tochkak.print_service.models.{Error, PrintData, Success => SuccessRes}
 import ru.tochkak.print_service.services.ConfigService
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.io.StdIn
+import scala.util.{Failure, Success}
 
 object WebServer {
 
@@ -33,11 +34,15 @@ object WebServer {
     val route = path("api" / "print") {
       post {
         entity(as[PrintData]) { printData =>
-          onSuccess(printActor.ask(Print(printData))(30.seconds).mapTo[Either[Error, Unit]]) { res =>
-            res.fold(
-              error => complete(error.toJson),
-              _ => complete(Success.toJson)
-            )
+          onComplete(printActor.ask(Print(printData))(1.minutes).mapTo[Either[Error, Unit]]) {
+            case Success(result) =>
+              result.fold(
+                error => complete(error.toJson),
+                _ => complete(SuccessRes.toJson)
+              )
+            case Failure(_) =>
+              logger.warn("Timeout")
+              complete(Error.TimeoutError.toJson)
           }
         }
       }
