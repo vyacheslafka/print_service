@@ -2,6 +2,7 @@ package ru.tochkak.print_service.services
 
 import javax.print.PrintServiceLookup
 import javax.print.attribute.HashPrintRequestAttributeSet
+import javax.print.attribute.standard.MediaPrintableArea
 import javax.swing.JEditorPane
 import javax.swing.text.html.{HTMLEditorKit, ImageView}
 import javax.swing.text.{Element, View, ViewFactory}
@@ -25,9 +26,18 @@ class PrintService {
       val jEditorPane = render(printData)
 
       attributes.add(ConfigService.orientation.value)
+      attributes.add(
+        new MediaPrintableArea(
+          0f,
+          0f,
+          ConfigService.width/ConfigService.value,
+          ConfigService.height/ConfigService.value,
+          ConfigService.measure.value)
+      )
+
       logger.debug(s"Printer name: ${printer.getName}")
 
-      Try(jEditorPane.print(null, null, false, printer, attributes, false)).fold(
+      Try(jEditorPane.print(null, null, true, printer, attributes, false)).fold(
         _ => Left(PrintError),
         _ => Right(())
       )
