@@ -1,3 +1,5 @@
+import com.typesafe.sbt.SbtNativePackager.autoImport.NativePackagerHelper._
+
 name := "print_service"
 organization := "ru.tochkak"
 version := "0.0.1"
@@ -16,5 +18,7 @@ libraryDependencies ++= Seq(
 mainClass in(Compile, run) := Some("ru.tochkak.print_service.WebServer")
 scalacOptions ++= Seq("-deprecation", "-feature")
 
-mappings in Universal += ((resourceDirectory in Compile).value / "application.conf") -> "conf/application.conf"
+resourceDirectory in Compile := baseDirectory.value / "conf"
+mappings in Universal ++= directory(baseDirectory.value / "conf")
+
 enablePlugins(JavaServerAppPackaging)
