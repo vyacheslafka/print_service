@@ -6,8 +6,8 @@ import javax.swing.JEditorPane
 import javax.swing.text.html.{HTMLEditorKit, ImageView}
 import javax.swing.text.{Element, View, ViewFactory}
 
-import cats.implicits._
 import org.slf4j.LoggerFactory
+import ru.tochkak.print_service.models.Error.{PrintError, PrintFindError}
 import ru.tochkak.print_service.models.{Error, PrintData}
 
 import scala.util.Try
@@ -16,7 +16,7 @@ class PrintService {
 
   import PrintService._
 
-  def print(printData: PrintData) = {
+  def print(printData: PrintData): Either[Error, Unit] = {
     val printServices = PrintServiceLookup.lookupPrintServices(null, null)
     logger.trace(s"Found ${printServices.length} printers")
 
@@ -27,13 +27,13 @@ class PrintService {
       attributes.add(ConfigService.orientation.value)
       logger.debug(s"Printer name: ${printer.getName}")
 
-      Try(jEditorPane.print(null, null, false, printer, attributes, false)).toEither.bimap[Error, Unit](
-        _ => Error.PrintError,
-        _ => ()
+      Try(jEditorPane.print(null, null, false, printer, attributes, false)).fold(
+        _ => Left(PrintError),
+        _ => Right(())
       )
     } getOrElse {
       logger.debug("Printer not found")
-      Error.PrintFindError.asLeft[Unit]
+      Left(PrintFindError)
     }
   }
 
