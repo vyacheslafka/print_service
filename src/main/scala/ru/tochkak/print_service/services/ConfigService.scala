@@ -14,6 +14,5 @@ object ConfigService {
   val measure: Measure = config.getString("printer.measure")
   val width: Float = config.getDouble("printer.width").toFloat
   val height: Float = config.getDouble("printer.height").toFloat
-  val value: Float = config.getDouble("printer.value").toFloat
   val template: String = config.getString("printer.template")
 }

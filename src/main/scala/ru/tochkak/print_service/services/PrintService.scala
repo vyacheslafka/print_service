@@ -30,14 +30,14 @@ class PrintService {
         new MediaPrintableArea(
           0f,
           0f,
-          ConfigService.width/ConfigService.value,
-          ConfigService.height/ConfigService.value,
+          ConfigService.width,
+          ConfigService.height,
           ConfigService.measure.value)
       )
 
       logger.debug(s"Printer name: ${printer.getName}")
 
-      Try(jEditorPane.print(null, null, true, printer, attributes, false)).fold(
+      Try(jEditorPane.print(null, null, false, printer, attributes, false)).fold(
         _ => Left(PrintError),
         _ => Right(())
       )
