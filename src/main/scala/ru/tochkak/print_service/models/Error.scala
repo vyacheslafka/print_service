@@ -11,6 +11,9 @@ sealed abstract class Error(
 
 object Error {
   final case object TimeoutError extends Error(100, "Таймаут")
+  final case object BadParams extends Error(101, "Неверные параметры")
   final case object PrintFindError extends Error(200, "Принтер не найден")
   final case object PrintError extends Error(201, "Ошибка печати")
+  final case object DirectoryError extends Error(300, "Ошибка директории")
+  final case object RenderPdfError extends Error(301, "Ошибка рендеринга PDF")
 }
