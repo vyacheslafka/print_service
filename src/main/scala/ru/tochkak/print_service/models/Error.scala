@@ -16,4 +16,5 @@ object Error {
   final case object PrintError extends Error(201, "Ошибка печати")
   final case object DirectoryError extends Error(300, "Ошибка директории")
   final case object RenderPdfError extends Error(301, "Ошибка рендеринга PDF")
+  final case object FontError extends Error(302, "Ошибка шрифтов")
 }

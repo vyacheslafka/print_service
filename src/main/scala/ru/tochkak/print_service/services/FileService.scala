@@ -31,9 +31,15 @@ class FileService {
     val pathO: Option[Path] = if (Files.isDirectory(directory)) Files.list(directory).findFirst else None
     pathO.map(_.toString)
   }
+
+  def getPathToFont: Option[String] = {
+    val font = FileSystems.getDefault.getPath(ConfigService.font)
+    if (Files.exists(font)) Some(font.toString) else None
+  }
 }
 
 object FileService {
+
   class CustomConsumer extends Consumer[Path] {
     override def accept(path: Path): Unit = path.toFile.delete
   }

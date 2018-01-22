@@ -1,15 +1,16 @@
 package ru.tochkak.print_service.services
 
 import java.io.ByteArrayInputStream
+import java.nio.charset.Charset
 import javax.swing.JEditorPane
-import javax.swing.text.{Element, View, ViewFactory}
 import javax.swing.text.html.{HTMLEditorKit, ImageView}
+import javax.swing.text.{Element, View, ViewFactory}
 
-import com.itextpdf.text.{Document, Rectangle}
 import com.itextpdf.text.pdf.PdfWriter
-import com.itextpdf.tool.xml.XMLWorkerHelper
+import com.itextpdf.text.{Document, FontFactory, Rectangle}
+import com.itextpdf.tool.xml.{XMLWorkerFontProvider, XMLWorkerHelper}
 import org.slf4j.LoggerFactory
-import ru.tochkak.print_service.models.Error.RenderPdfError
+import ru.tochkak.print_service.models.Error.{FontError, RenderPdfError}
 import ru.tochkak.print_service.models.{Error, PrintData}
 
 import scala.util.Try
@@ -47,11 +48,22 @@ class RenderService {
       writer <- Try(PdfWriter.getInstance(document, output))
         .fold(_ => Left(RenderPdfError), pdfWriter => Right(pdfWriter))
       _ = document.open()
-      _ <- Try(XMLWorkerHelper.getInstance.parseXHtml(writer, document, inputStream))
-        .fold(_ => Left(RenderPdfError), pdfWriter => Right(pdfWriter))
+      font <- getFont.toRight(FontError)
+      _ <- Try(XMLWorkerHelper.getInstance.parseXHtml(
+        writer, document, inputStream, null, Charset.forName("UTF-8"), font
+      )).fold(_ => Left(RenderPdfError), pdfWriter => Right(pdfWriter))
       _ = document.close()
       _ = output.close()
     } yield ()
+  }
+
+  private def getFont = {
+    fileService.getPathToFont.map { pathToFont =>
+      val fontImp = new XMLWorkerFontProvider(XMLWorkerFontProvider.DONTLOOKFORFONTS)
+      fontImp.register(pathToFont)
+      FontFactory.setFontImp(fontImp)
+      fontImp
+    }
   }
 
   private def replace(printData: PrintData) = {

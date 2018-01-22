@@ -21,9 +21,9 @@ object PrintData extends DefaultJsonProtocol {
     override def read(json: JsValue): PrintData = json match {
       case JsObject(fields) => PrintData(
         fields.get("id").map(_.toString.toLong),
-        fields("first_name").toString,
-        fields("last_name").toString,
-        fields("date").toString
+        fields("first_name").convertTo[String],
+        fields("last_name").convertTo[String],
+        fields("date").convertTo[String]
       )
       case _ => throw DeserializationException("PrintData expected")
     }

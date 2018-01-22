@@ -14,6 +14,7 @@ object ConfigService {
   val width: Float = config.getDouble("render.width").toFloat
   val height: Float = config.getDouble("render.height").toFloat
   val template: String = config.getString("render.template")
+  val font: String = config.getString("render.font")
 
   val printerName: String = config.getString("printer.name")
   val orientation: Orientation = config.getString("printer.orientation")

@@ -2,7 +2,7 @@ import com.typesafe.sbt.SbtNativePackager.autoImport.NativePackagerHelper._
 
 name := "print_service"
 organization := "ru.tochkak"
-version := "0.1.0"
+version := "0.1.1"
 scalaVersion := "2.12.4"
 
 val akkaHttpVersion = "10.0.11"
